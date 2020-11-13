@@ -5,6 +5,8 @@
  */
 package superpuissance4_perello_lamassiaude;
 
+import java.util.Scanner;
+
 
 /**
  *
@@ -21,14 +23,12 @@ public class FenetreDeJeu extends javax.swing.JFrame {
      */
     public FenetreDeJeu() {
         initComponents();
-  //      Panneau_info_Joueurs.setVisible(false);
-    //    Panneau_info_Partie.setVisible(false);
-    this.setVisible(true);
-System.out.println("frame cree");
+        Panneau_info_Joueurs.setVisible(false);
+        Panneau_info_Partie.setVisible(false);
         for (int i = 5; i >= 0; i--) {
-            for (int j = 0; i < 7; i++) {
-        //        CelluleGraphique cellGraph = new CelluleGraphique();
-      //          PanneauGrille.add(cellGraph);
+            for (int j = 0; j < 7; j++) {
+                CelluleGraphique cellGraph = new CelluleGraphique(grilleJeu.Cellules[i][j]);
+                PanneauGrille.add(cellGraph);
             }
         }
     }
@@ -99,14 +99,14 @@ System.out.println("frame cree");
                 nomJoueur1ActionPerformed(evt);
             }
         });
-        Panneau_creation_partie.add(nomJoueur1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 50, 170, 30));
+        Panneau_creation_partie.add(nomJoueur1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 10, 170, 30));
 
         nomJoueur2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nomJoueur2ActionPerformed(evt);
             }
         });
-        Panneau_creation_partie.add(nomJoueur2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 10, 170, 30));
+        Panneau_creation_partie.add(nomJoueur2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 50, 170, 30));
 
         btn_Start.setText("Démarrer Partie");
         btn_Start.addActionListener(new java.awt.event.ActionListener() {
@@ -218,6 +218,9 @@ System.out.println("frame cree");
         // TODO add your handling code here:
         Panneau_info_Joueurs.setVisible(true);
         Panneau_info_Partie.setVisible(true);
+        initialiserPartie();
+        PanneauGrille.repaint();
+        btn_Start.setEnabled(false);
     }//GEN-LAST:event_btn_StartActionPerformed
 
     private void nomJoueur1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomJoueur1ActionPerformed
@@ -258,7 +261,7 @@ System.out.println("frame cree");
             java.util.logging.Logger.getLogger(FenetreDeJeu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-System.out.println("debut de partie");
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -267,6 +270,99 @@ System.out.println("debut de partie");
         });
     }
 
+    void initialiserPartie(){
+    //inscription des 2 joueurs:
+    String Joueur1=nomJoueur1.getText();
+    String Joueur2=nomJoueur2.getText();
+    Joueur J1 = new Joueur(Joueur1);
+    Joueur J2 = new Joueur(Joueur2);
+    ListeJoueurs[0]=J1;
+    ListeJoueurs[1]=J2;
+    
+    lbl_J1_nom.setText(Joueur1);
+    lbl_J2_nom.setText(Joueur2);
+    
+    //détermination du 1er joueur:
+    double nbalea=Math.random();
+    if (nbalea>0.5) {
+        joueurCourant= ListeJoueurs[0];
+    }
+    else{
+        joueurCourant= ListeJoueurs[1];
+    }
+    lbl_JCourant.setText(joueurCourant.Nom);
+    System.out.println("Le premier joueur est : "+joueurCourant.Nom);
+    
+    //Distribution des couleurs:
+    attribuerCouleursAuxJoueurs();
+    
+    lbl_J1_couleur1.setText(J1.Couleur);
+    lbl_J2_couleur.setText(J2.Couleur);
+    
+    
+    lbl_J1_desintegrateur1.setText(J1.nombreDesintegrateurs+"");
+    lbl_J2_desintegrateur.setText(J2.nombreDesintegrateurs+"");
+    
+    //Création de la grille
+    grilleJeu.viderGrille();
+    int nbTN=0;
+    while (nbTN<=4){
+        int ligne=(int)(Math.random() * 6);
+        int colone=(int)(Math.random() * 7);
+        if (grilleJeu.Cellules[ligne][colone].desintegrateur==false && grilleJeu.Cellules[ligne][colone].trouNoir==false){
+            if (nbTN==3 || nbTN==4){
+                grilleJeu.placerTrouNoir(ligne,colone);
+                grilleJeu.placerDesintegrateur(ligne,colone);
+            }else{
+                grilleJeu.placerTrouNoir(ligne,colone);
+            }
+            nbTN+=1;
+    }
+    }
+    int nbDesint=0;
+    while (nbDesint<=2){
+        int ligne=(int)(Math.random() * 6);
+        int colone=(int)(Math.random() * 7);
+        if (grilleJeu.Cellules[ligne][colone].desintegrateur==false && grilleJeu.Cellules[ligne][colone].trouNoir==false){
+            grilleJeu.placerDesintegrateur(ligne,colone);
+            nbDesint+=1;
+        }else{
+                nbDesint=nbDesint;
+                }
+    }    
+    for (int i=0;i<21;i++){
+        if (ListeJoueurs[0].Couleur.equals("Rouge")){
+            Jeton jetonjoueurR = new Jeton("Rouge");
+            ListeJoueurs[0].ajouterJeton(jetonjoueurR);
+            Jeton jetonjoueurJ = new Jeton("Jaune");
+            ListeJoueurs[1].ajouterJeton(jetonjoueurJ);
+        }else{
+            Jeton jetonjoueurR = new Jeton("Rouge");
+            ListeJoueurs[1].ajouterJeton(jetonjoueurR);
+            Jeton jetonjoueurJ = new Jeton("Jaune");
+            ListeJoueurs[0].ajouterJeton(jetonjoueurJ);
+        }
+    }
+}
+    
+    void attribuerCouleursAuxJoueurs(){
+    double nbalea=Math.random();
+    if (nbalea>0.5) {
+        ListeJoueurs[0].affecterCouleur("Rouge");
+        ListeJoueurs[1].affecterCouleur("Jaune");
+        System.out.println(ListeJoueurs[0].Nom+" a la couleur ROUGE");
+        System.out.println(ListeJoueurs[1].Nom+" a la couleur JAUNE");
+    }else{
+        ListeJoueurs[0].affecterCouleur("Jaune");
+        ListeJoueurs[1].affecterCouleur("Rouge");
+        System.out.println(ListeJoueurs[1].Nom+" a la couleur ROUGE");
+        System.out.println(ListeJoueurs[0].Nom+" a la couleur JAUNE");
+    }
+}
+
+    
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanneauGrille;
     private javax.swing.JPanel Panneau_creation_partie;

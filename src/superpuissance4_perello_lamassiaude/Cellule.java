@@ -90,7 +90,7 @@ public String  lireCouleurDuJeton(){
     //renvoie la couleur du jeton occupant la cellule
     String couleur;
     if (jetonCourant==null){
-        couleur= "pas de jeton";
+        couleur= "vide";
     }
     else{
         couleur=jetonCourant.lireCouleur();

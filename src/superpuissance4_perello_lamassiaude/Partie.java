@@ -34,6 +34,30 @@ public void attribuerCouleursAuxJoueurs(){
 }
 
 public void initialiserPartie(){
+    //inscription des 2 joueurs:
+    Scanner sca = new Scanner(System.in);
+    System.out.println("Entrez le nom du premier joueur");
+    String Joueur1=sca.next();
+    System.out.println("Entrez le nom du second joueur");
+    String Joueur2=sca.next();
+    Joueur J1 = new Joueur(Joueur1);
+    Joueur J2 = new Joueur(Joueur2);
+    ListeJoueurs[0]=J1;
+    ListeJoueurs[1]=J2;
+    
+    //détermination du 1er joueur:
+    double nbalea=Math.random();
+    if (nbalea>0.5) {
+        joueurCourant= ListeJoueurs[0];
+    }
+    else{
+        joueurCourant= ListeJoueurs[1];
+    }
+    System.out.println("Le premier joueur est : "+joueurCourant.Nom);
+    
+    //Distribution des couleurs:
+    attribuerCouleursAuxJoueurs();
+
     //Création de la grille
     grilleJeu.viderGrille();
     int nbTN=0;
@@ -79,30 +103,6 @@ public void initialiserPartie(){
 }
     
 public void debuterPartie(){
-    //inscription des 2 joueurs:
-    Scanner sca = new Scanner(System.in);
-    System.out.println("Entrez le nom du premier joueur");
-    String Joueur1=sca.next();
-    System.out.println("Entrez le nom du second joueur");
-    String Joueur2=sca.next();
-    Joueur J1 = new Joueur(Joueur1);
-    Joueur J2 = new Joueur(Joueur2);
-    ListeJoueurs[0]=J1;
-    ListeJoueurs[1]=J2;
-    
-    //détermination du 1er joueur:
-    double nbalea=Math.random();
-    if (nbalea>0.5) {
-        joueurCourant= ListeJoueurs[0];
-    }
-    else{
-        joueurCourant= ListeJoueurs[1];
-    }
-    System.out.println("Le premier joueur est : "+joueurCourant.Nom);
-    
-    //Distribution des couleurs:
-    attribuerCouleursAuxJoueurs();
-
     initialiserPartie();
     while((grilleJeu.etreGagnantePourJoueur(ListeJoueurs[0])!=true) && (grilleJeu.etreGagnantePourJoueur(ListeJoueurs[1])!=true) && (grilleJeu.etreRemplie()!=true)){
         //afficher la grille
