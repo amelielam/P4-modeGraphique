@@ -26,26 +26,39 @@ public boolean ajouterJetonDansColonne(Joueur joueurActuel ,int colonne){
     boolean b=false;
     for (int i=0;i<6;i++){
         if(colonneRemplie(colonne)==false){
-            if (Cellules[5-i][colonne].presenceDesintegrateur()==true){
-                Cellules[5-i][colonne].recupererDesintegrateur();
+            
+            if (Cellules[i][colonne].presenceDesintegrateur()==true){
+                Cellules[i][colonne].recupererDesintegrateur();
                 joueurActuel.nombreDesintegrateurs+=1;
-                Cellules[5-i][colonne].affecterJeton(joueurActuel.ListeJetons[joueurActuel.nombreJetonsRestant-1]);
-                return true;
+                Cellules[i][colonne].affecterJeton(joueurActuel.ListeJetons[joueurActuel.nombreJetonsRestant-1]);
+                joueurActuel.nombreJetonsRestant--;
+                b=true;
+                break;
             }
-            else if (Cellules[5-i][colonne].presenceTrouNoir()==true){
-                Cellules[5-i][colonne].activerTrouNoir();
-                Cellules[5-i][colonne].supprimerJeton();
+            else if (Cellules[i][colonne].presenceTrouNoir()==true){
+                Cellules[i][colonne].activerTrouNoir();
+                Cellules[i][colonne].supprimerJeton();
                 System.out.println("Votre jeton a été absorbé par le Trou Noir...");
-                return true;
+                joueurActuel.nombreJetonsRestant--;
+                b=true;
+                break;
             }
-            else if (Cellules[5-i][colonne].jetonCourant==null){
-                Cellules[5-i][colonne].affecterJeton(joueurActuel.ListeJetons[joueurActuel.nombreJetonsRestant-1]);
-                return true;
+            else {
+                if (Cellules[i][colonne].jetonCourant==null){
+                    Cellules[i][colonne].affecterJeton(joueurActuel.ListeJetons[joueurActuel.nombreJetonsRestant-1]);
+                    joueurActuel.nombreJetonsRestant--;
+                    System.out.println("ligne= "+i);
+                    b= true;
+                    break;
+                }else{
+                    System.out.println("jeton dans ligne "+i);
+                    b= false;
+                }
             }
-            b= true;
-        }else{
-            b= false;            
-        }
+            }else{
+                
+                b= false;            
+            }
     }
     return b;
 }
@@ -158,20 +171,30 @@ public boolean  etreGagnantePourJoueur(Joueur joueurteste){
     return test;
     }
 
-public void tasserGrille(int colonejeton){
-    //	lorsqu’un jeton	est capturé ou détruit,	tasse la grille	en décalant de une ligne les jetons situés au dessus de	la cellule libérée.
-    for (int i=0;i<5;i++){
-        if (Cellules[5-i][colonejeton].jetonCourant==null){
-            Cellules[5-i][colonejeton].jetonCourant=Cellules[4-i][colonejeton].jetonCourant;
-            Cellules[4-i][colonejeton].jetonCourant=null;
+public void tasserColonne(int colonnejeton){
+    for (int i=0; i<6; i++){
+        if(i==5){
+            Cellules[i][colonnejeton].jetonCourant = null;
+        }else{
+            if (Cellules[i][colonnejeton].jetonCourant == null){
+                Cellules[i][colonnejeton].jetonCourant = Cellules[i+1][colonnejeton].jetonCourant;
+                Cellules[i+1][colonnejeton].jetonCourant = null;
         }
+    }
+}
+}
+
+public void tasserGrille(){
+    //	lorsqu’un jeton	est capturé ou détruit,	tasse la grille	en décalant de une ligne les jetons situés au dessus de	la cellule libérée.
+    for (int i=0;i<7;i++){
+        tasserColonne(i);
     }
 }
 
 public boolean colonneRemplie(int colonne){
     //	renvoie	vrai si	la colonne est remplie (on ne peut y jouer un Jeton)
     boolean essai=false;
-    if(celluleOccupee(0,colonne)==true){
+    if(celluleOccupee(5,colonne)==true){
         essai=true;
     }
     return essai;
@@ -179,39 +202,39 @@ public boolean colonneRemplie(int colonne){
     
 
 
-public boolean placerTrouNoir(int ligne, int colone){
+public boolean placerTrouNoir(int ligne, int colonne){
     //ajoute un	trou noir à l’endroit indiqué et retourne vrai si l’ajout s’est	bien passé, ou faux sinon (exemple : trou noir déjà présent)
     boolean test=false;
-    if(Cellules[ligne][colone].trouNoir==false){
-        Cellules[ligne][colone].trouNoir = true;
+    if(Cellules[ligne][colonne].trouNoir==false){
+        Cellules[ligne][colonne].trouNoir = true;
         test=true;
     }
 return test;
 }
 
-public boolean  placerDesintegrateur(int ligne, int colone){
+public boolean  placerDesintegrateur(int ligne, int colonne){
     //ajoute un	désintégrateur à l’endroit indiqué et retourne vrai si l’ajout s’est bien passé, ou faux sinon (exemple : désintégrateur déjà présent)
     boolean test=false;
-    if(Cellules[ligne][colone].desintegrateur==false){
-        Cellules[ligne][colone].desintegrateur = true;
+    if(Cellules[ligne][colonne].desintegrateur==false){
+        Cellules[ligne][colonne].desintegrateur = true;
         test=true;
     }
 return test;
 }
 
-public boolean supprimerJeton(int ligne, int colone){
+public boolean supprimerJeton(int ligne, int colonne){
     //supprime le jeton	de la cellule visée. Renvoie vrai si la	suppression s’est bien déroulée, ou faux autrement (jeton absent)
-    if (Cellules[ligne][colone].recupererJeton()!=null){
-        Cellules[ligne][colone].supprimerJeton();
+    if (Cellules[ligne][colonne].recupererJeton()!=null){
+        Cellules[ligne][colonne].supprimerJeton();
         return true;
     }
     return false;
 }
 
-public Jeton recupererJeton(int ligne, int colone){
+public Jeton recupererJeton(int ligne, int colonne){
     //enlève le	jeton de la cellule visée et renvoie une référence vers	ce jeton.
-    Jeton jetonrecup =  Cellules[ligne][colone].jetonCourant;
-    Cellules[ligne][colone].supprimerJeton();
+    Jeton jetonrecup =  Cellules[ligne][colonne].jetonCourant;
+    Cellules[ligne][colonne].supprimerJeton();
     return jetonrecup;
 }
 

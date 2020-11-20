@@ -64,6 +64,7 @@ public void initialiserPartie(){
     while (nbTN<=5){
         int ligne=(int)(Math.random() * 6);
         int colone=(int)(Math.random() * 7);
+        
         if (grilleJeu.Cellules[ligne][colone].desintegrateur==false && grilleJeu.Cellules[ligne][colone].trouNoir==false){
             if (nbTN==4 || nbTN==5){
                 grilleJeu.placerTrouNoir(ligne,colone);
@@ -72,6 +73,8 @@ public void initialiserPartie(){
                 grilleJeu.placerTrouNoir(ligne,colone);
             }
             nbTN+=1;
+            
+        
     }
     }
     
@@ -162,7 +165,7 @@ public void debuterPartie(){
             }else{
                 joueurCourant.ListeJetons[joueurCourant.nombreJetonsRestant]=grilleJeu.recupererJeton(ligne,colonne);
                 joueurCourant.nombreJetonsRestant+=1;
-                grilleJeu.tasserGrille(colonne);
+                grilleJeu.tasserGrille();
             }  
         }
         
@@ -184,7 +187,7 @@ public void debuterPartie(){
                 colonne = desinC.nextInt()-1;
             joueurCourant.utiliserDesintegrateur();
             grilleJeu.supprimerJeton(ligne,colonne);
-            grilleJeu.tasserGrille(colonne);
+            grilleJeu.tasserGrille();
             }
         }
         if (saisie==3 && (joueurCourant.nombreDesintegrateurs==0)){
